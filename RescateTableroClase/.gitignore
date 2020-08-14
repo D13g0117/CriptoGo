@@ -1,0 +1,10 @@
+**/.DS_Store
+**/*.class
+
+bin/*
+src/rescate/jugador/*
+
+RescateTableroJadex*
+sources.txt
+
+jadex.pr*
