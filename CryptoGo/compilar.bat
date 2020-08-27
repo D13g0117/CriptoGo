@@ -21,12 +21,9 @@ src\lib\commons-commons\commons-codec-1.3.jar
 javac src\ontology\actions\*java 
 javac src\ontology\concepts\*java 
 javac src\ontology\predicates\*java 
-javac src\robot\beliefs\*java
-javac src\fridge\plans\*java
-javac src\human\plans\*java
-javac src\robot\plans\*java
 javac src\jugador\plans\*java
+javac src\mesa\plans\*java
 
-jar cvf TraemeCervezasJadex *
+jar cvf CryptoGoJadex *
 
 

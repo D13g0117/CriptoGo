@@ -122,7 +122,6 @@
 
   <!-- METAS -->
   <goals>
-  
     <!-- Registro en páginas amarillas -->
     <achievegoalref name="df_register">
       <concrete ref="dfcap.df_register" />
@@ -177,8 +176,6 @@
 				$beliefbase.empezar &amp;&amp; $beliefbase.numJugadores == 6
 			</creationcondition>
 		</performgoal>
-
-
   </goals>
 
   <!-- PLANES -->

@@ -1,3 +1,4 @@
+@echo off
 set PATH=C:\Program Files\Java\jdk1.8.0_261\bin;%PATH%
 set classpath=ScwJadex.jar;^
 src\lib\Base64.jar;^

@@ -23,34 +23,203 @@ Univ. Carlos III de Madrid (Spain)<br>
 		<import>jadex.adapter.fipa.*</import>
 		<import>java.util.logging.*</import>
 		<import>java.util.*</import>
-		<import>human.plans.*</import>
+		<import>ontology.actions.*</import>
+		<import>ontology.concepts.*</import>
+		<import>ontology.predicates.*</import>
+		<import>jugador.plans.*</import>
 	</imports>
-
+	
 	<capabilities>
 		<capability name="dfcap" file="jadex.planlib.DF"/>
 	</capabilities>
+
+	<!-- CREENCIAS -->
+  	<beliefs>
+
+		<!-- Mesa -->
+		<belief name="mesa" class="AgentIdentifier">
+		<fact>new AgentIdentifier()</fact>
+		</belief>
+
+		<!-- Jugador -->
+		<belief name="jugador" class="Jugador">
+		<fact>new Jugador()</fact>
+		</belief>
+
+		<!-- Pocas Cartas -->
+		<belief name="pocasCartas" class="boolean">
+		<fact>true</fact>
+		</belief>
+
+		<!-- Turno del Jugador -->
+		<belief name="turnoJugador" class="boolean">
+		<fact>false</fact>
+		</belief>
+
+  	</beliefs>
+
+  	<!-- METAS -->
 	<goals>
-			<achievegoalref name="df_register">
+		<achievegoalref name="df_register">
 			<concrete ref="dfcap.df_register"/>
 		</achievegoalref>
+
+		<achievegoal name="unirsePartida"></achievegoal>
+
+		<!-- Objetivo para empezar la partida -->
+		<performgoal name="solicitarCartas" retry="false">
+			<creationcondition>
+				<!-- Que se active cuando sea el turno del jugador y tenga 1 carta o menos -->
+                $beliefbase.pocasCartas == true &amp;&amp; $beliefbase.turnoJugador == true
+			</creationcondition>
+		</performgoal>
 
 		<achievegoalref name="df_search">
 			<concrete ref="dfcap.df_search"/>
 		</achievegoalref>
-		<performgoal name="get_beer" recur="true" recurdelay="3000" >  
-			<contextcondition>
-				 ($beliefbase.havebeer) &amp;&amp; 
-				 (($beliefbase.newbeertime + $beliefbase.drinkingtime ) &lt; ($beliefbase.currenttime ))   
-			</contextcondition>
-		</performgoal> 
 	</goals>
-	
+
+	<!-- PLANES -->
 	<plans>
-		<plan name="Unirse_a_la_partida">
-                <body class="UnirsePartida" />
-			<trigger> <goal ref="df_search"/> </trigger>
+		<plan name="Unirse_partida">
+            <body class="UnirsePartidaPlan" />
+			<trigger> <goal ref="unirsePartida"/> </trigger>
 		</plan>
+		
+		<plan name="Realizar_Accion">
+            <body class="RealizarAccion" />
+			<trigger>
+				<messageevent ref="Inform_Turno_Asignado" />
+			</trigger>
+		</plan>
+
+		<plan name="Solicitar_cartas">
+            <body class="SolicitarCartasPlan" />
+			<trigger> <goal ref="solicitarCartas"/> </trigger>
+		</plan>
+
+		<plan name="Recibir_cartas">
+            <body class="RecibirCartas" />
+			<trigger><messageevent ref="Inform_Dar_Cartas" /></trigger>
+		</plan>
+
 	</plans>
+
+	<!-- EVENTOS -->
+	<events>
+		<!-- Unirse partida -->
+		<messageevent name="Request_Unirse_Partida" direction="send" type="fipa">
+			<parameter name="performative" class="String" direction="fixed">
+				<value>SFipa.REQUEST</value>
+			</parameter>
+			<parameter name="language" class="String" direction="fixed">
+				<value>SFipa.NUGGETS_XML</value>
+			</parameter>
+			<parameter name="conversation-id" class="String">
+				<value>SFipa.createUniqueId($scope.getAgentName())</value>
+			</parameter>
+			<parameter name="content-class" class="Class" direction="fixed">
+				<value>UnirsePartida.class</value>
+			</parameter>
+		</messageevent>
+
+		<messageevent name="Inform_Jugador_Unido" direction="receive" type="fipa">
+			<parameter name="performative" class="String" direction="fixed">
+				<value>SFipa.INFORM</value>
+			</parameter>
+			<parameter name="language" class="String" direction="fixed">
+				<value>SFipa.NUGGETS_XML</value>
+			</parameter>
+			<parameter name="content-class" class="Class" direction="fixed">
+				<value>JugadorUnido.class</value>
+			</parameter>
+		</messageevent>
+
+		<messageevent name="Refuse_Unirse_Partida" direction="receive" type="fipa">
+			<parameter name="performative" class="String" direction="fixed">
+				<value>SFipa.REFUSE</value>
+			</parameter>
+			<parameter name="language" class="String" direction="fixed">
+				<value>SFipa.NUGGETS_XML</value>
+			</parameter>
+			<parameter name="content-class" class="Class" direction="fixed">
+				<value>UnirsePartida.class</value>
+			</parameter>
+		</messageevent>
+
+		<messageevent name="Failure_Unirse_Partida" direction="receive" type="fipa">
+			<parameter name="performative" class="String" direction="fixed">
+				<value>SFipa.FAILURE</value>
+			</parameter>
+			<parameter name="language" class="String" direction="fixed">
+				<value>SFipa.NUGGETS_XML</value>
+			</parameter>
+			<parameter name="content-class" class="Class" direction="fixed">
+				<value>UnirsePartida.class</value>
+			</parameter>
+		</messageevent>
+
+		<!-- Cambiar turno -->
+		<messageevent name="Inform_Turno_Asignado" direction="receive" type="fipa">
+			<parameter name="performative" class="String" direction="fixed">
+				<value>SFipa.INFORM</value>
+			</parameter>
+			<parameter name="language" class="String" direction="fixed">
+				<value>SFipa.NUGGETS_XML</value>
+			</parameter>
+			<parameter name="content-class" class="Class" direction="fixed">
+				<value>TurnoAsignado.class</value>
+			</parameter>
+		</messageevent>
+
+		<!-- Solicitar cartas -->
+		<messageevent name="Request_Solicitar_Cartas" direction="send" type="fipa">
+			<parameter name="performative" class="String" direction="fixed">
+				<value>SFipa.REQUEST</value>
+			</parameter>
+			<parameter name="language" class="String" direction="fixed">
+				<value>SFipa.NUGGETS_XML</value>
+			</parameter>
+			<parameter name="conversation-id" class="String">
+				<value>SFipa.createUniqueId($scope.getAgentName())</value>
+			</parameter>
+			<parameter name="content-class" class="Class" direction="fixed">
+				<value>SolicitarCartas.class</value>
+			</parameter>
+		</messageevent>
+
+		<messageevent name="Inform_Dar_Cartas" direction="receive" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.INFORM</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>DarCartas.class</value>
+            </parameter>
+        </messageevent>
+
+	</events>
+
+	  <!-- CONFIGURACION -->
+	<configurations>
+		<configuration name="default">
+
+			<goals>
+			<initialgoal ref="df_register">
+				<parameter ref="description">
+				<value>
+					SFipa.createAgentDescription(null, SFipa.createServiceDescription("jugador", "agente", "CryptoGo"))
+				</value>
+				</parameter>
+			</initialgoal>
+
+			<initialgoal ref="unirsePartida"></initialgoal>
+			</goals>
+
+		</configuration>
+	</configurations>
 	
 </agent>
 
