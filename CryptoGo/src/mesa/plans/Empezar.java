@@ -26,42 +26,26 @@ public class Empezar extends Plan
 		mazo = (Mazo) getBeliefbase().getBelief("mazo").getFact();
 		mazo = InicializarMazo();
 
-		//for (int i = 0; i < mesa.getJugadores().size(); i++){
-		//	RepartirCartas(i);
-		//}
-
 		// Actualizamos el belief de la mesa
 		getBeliefbase().getBelief("mesa").setFact(mesa);
 		getBeliefbase().getBelief("mazo").setFact(mazo);
 		getBeliefbase().getBelief("turno").setFact(1);
 		getBeliefbase().getBelief("empezar").setFact(false);    
-	
+		getBeliefbase().getBelief("jugadorActual").setFact(mesa.getJugadores().get(0).getIdAgente());
+		
 		// Se informa también al jugador al que le toca ahora jugar
+		System.out.println("\n ---------------");
+		System.out.println("| [INFO] FASE 1 |");
+		System.out.println(" ---------------");
+		System.out.println("\n[INFO] TURNO " + getBeliefbase().getBelief("turno").getFact());
 		IMessageEvent respuesta = createMessageEvent("Inform_Turno_Asignado");
 		TurnoAsignado predicado = new TurnoAsignado();
 		predicado.setJugador(mesa.getJugadores().get(0));
-		System.out.println("[INFO] Es el turno del jugador con id " + mesa.getJugadores().get(0).getIdAgente() + "\n");
+		System.out.println("\n[INFO] Decide el jugador con id " + mesa.getJugadores().get(0).getIdAgente() + "\n");
 		respuesta.setContent(predicado);
 		respuesta.getParameterSet(SFipa.RECEIVERS).addValue(mesa.getJugadores().get(0).getIdAgente());
 		sendMessage(respuesta);
 	}
-
-	//public void RepartirCartas(int jugador){
-	//	ArrayList<Carta> cartas = new ArrayList<>();
-	//	cartas.add(mazo.getCarta());
-	//	cartas.add(mazo.getCarta());
-	//	cartas.add(mazo.getCarta());
-	//	cartas.add(mazo.getCarta());
-	//	cartas.add(mazo.getCarta());
-	//	getBeliefbase().getBelief("mazo").setFact(mazo);
-	//	DarCartas accion = new DarCartas();
-	//	accion.setCartas(cartas);
-	//	System.out.println("[INFO] Se reparten las cartas al jugador con id " + mesa.getJugadores().get(jugador).getIdAgente());
-	//	IMessageEvent msgsend = createMessageEvent("Request_Dar_Cartas");
-	//	msgsend.setContent(accion);
-	//	msgsend.getParameterSet(SFipa.RECEIVERS).addValue(mesa.getJugadores().get(jugador).getIdAgente());
-	//	sendMessage(msgsend);
-	//}
 
 	public Mazo InicializarMazo (){
 		Mazo mazo = new Mazo();

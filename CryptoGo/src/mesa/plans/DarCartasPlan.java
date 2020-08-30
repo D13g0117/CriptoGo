@@ -17,6 +17,8 @@ public class DarCartasPlan extends Plan
 	public void body()
 	{
         IMessageEvent peticion = (IMessageEvent) getInitialEvent();
+        Mesa mesa = (Mesa) getBeliefbase().getBelief("mesa").getFact();
+        AgentIdentifier idJugador = (AgentIdentifier) peticion.getParameter("sender").getValue();
         SolicitarCartas solicitud = (SolicitarCartas) peticion.getContent();
         AgentIdentifier target = (AgentIdentifier) solicitud.getSenderID();
         Mazo mazo = (Mazo) getBeliefbase().getBelief("mazo").getFact();
@@ -30,7 +32,9 @@ public class DarCartasPlan extends Plan
             for (int i = 0; i < 6; i ++){
                 cartas.add(mazo.getCarta());
             }
+            mesa.getJugador(idJugador).setMano(cartas);
             getBeliefbase().getBelief("mazo").setFact(mazo);
+            getBeliefbase().getBelief("mesa").setFact(mesa);
             IMessageEvent msgsend0 = createMessageEvent("Inform_Dar_Cartas");
             DarCartas accion = new DarCartas();
             accion.setCartas(cartas);
@@ -42,7 +46,9 @@ public class DarCartasPlan extends Plan
             for (int i = 0; i < 4; i ++){
                 cartas.add(mazo.getCarta());
             }
+            mesa.getJugador(idJugador).setMano(cartas);
             getBeliefbase().getBelief("mazo").setFact(mazo);
+            getBeliefbase().getBelief("mesa").setFact(mesa);
             IMessageEvent msgsend1 = createMessageEvent("Inform_Dar_Cartas");
             DarCartas accion = new DarCartas();
             accion.setCartas(cartas);
@@ -54,7 +60,7 @@ public class DarCartasPlan extends Plan
             System.out.println("[RECHAZADO] No es el tunro de recibir cartas");
             // Se rechaza la petición de acción del jugador
             DarCartas accion = new DarCartas();
-            IMessageEvent respuesta = peticion.createReply("Failure_Dar_Cartas", accion);
+            IMessageEvent respuesta = peticion.createReply("Refuse_Dar_Cartas", accion);
             sendMessage(respuesta);
         }
     }

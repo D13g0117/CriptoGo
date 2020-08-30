@@ -17,8 +17,8 @@ public class Mazo extends Concepto {
     public ArrayList<Carta> getCartas(){
         return cartas;
     }
-    public ArrayList<Carta> setCartas(ArrayList<Carta> cartas){
-        return this.cartas = cartas;
+    public void setCartas(ArrayList<Carta> cartas){
+        this.cartas = cartas;
     }
 
     public Carta getCarta(){

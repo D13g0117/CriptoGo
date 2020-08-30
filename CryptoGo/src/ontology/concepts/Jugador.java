@@ -12,9 +12,8 @@ public class Jugador extends Concepto {
     /*** Atributos ***/
     private AgentIdentifier idAgente;
     private Carta cartaSeleccionada;
-    private ArrayList<Carta> sustitucion; //[Carrta a sustituir, Carta que la sustituye]
     private ArrayList<Carta> mano;
-    private ArrayList<Carta> seleccion;
+    private Seleccion seleccion = new Seleccion();
 
     /*** Getters & Setters ***/
     public AgentIdentifier getIdAgente() {
@@ -31,29 +30,22 @@ public class Jugador extends Concepto {
     public ArrayList<Carta> getMano(){
         return mano;
     }
-    public ArrayList<Carta> setMano(ArrayList<Carta> mano){
-        return this.mano = mano;
+    public void setMano(ArrayList<Carta> mano){
+        this.mano = mano;
     }
 
-    public ArrayList<Carta> getSeleccion(){
+    public Seleccion getSeleccion(){
         return seleccion;
     }
-    public ArrayList<Carta> setSeleccion(ArrayList<Carta> seleccion){
-        return this.seleccion = seleccion;
-    }
-
-    public ArrayList<Carta> getSustitucion(){
-        return sustitucion;
-    }
-    public ArrayList<Carta> setSustitucion(ArrayList<Carta> sustitucion){
-        return this.sustitucion = sustitucion;
+    public void setSeleccion(Seleccion seleccion){
+        this.seleccion = seleccion;
     }
     
     public Carta getCartaSeleccionada(){
         return cartaSeleccionada;
     }
-    public Carta setCartaSeleccionada (Carta cartaSeleccionada){
-        return this.cartaSeleccionada = cartaSeleccionada;
+    public void setCartaSeleccionada (Carta cartaSeleccionada){
+        this.cartaSeleccionada = cartaSeleccionada;
     }
 
 }

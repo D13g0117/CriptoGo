@@ -19,6 +19,7 @@ public class RecibirCartas extends Plan
         IMessageEvent peticion = (IMessageEvent) getInitialEvent();
         DarCartas darCartas = new DarCartas();
         ArrayList<Carta> nuevasCartas = new ArrayList<>();
+
         darCartas = (DarCartas) peticion.getContent();
         nuevasCartas = darCartas.getCartas();
         Jugador jugador = (Jugador) getBeliefbase().getBelief("jugador").getFact();
@@ -34,6 +35,7 @@ public class RecibirCartas extends Plan
             jugador.setMano(aux);
             getBeliefbase().getBelief("jugador").setFact(jugador);
         }
+        getBeliefbase().getBelief("pocasCartas").setFact(false);
         System.out.println("[PLAN] Jugador con id " + getAgentIdentifier() + " ha recibido las cartas");
     }
 }

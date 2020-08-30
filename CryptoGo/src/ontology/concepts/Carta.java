@@ -20,8 +20,6 @@ public class Carta extends Concepto {
     public Carta() {
     }
 
-
-
     /*** Getters & Setters ***/
     public String getNombre() {
         return nombre;
@@ -42,5 +40,12 @@ public class Carta extends Concepto {
       }
     public void setTipo(int tipo) {
         this.tipo = tipo;
+    }
+
+    public String Mostrar(){
+      String security, type;
+      if (seguridad == 0)security = "Baja";else if (seguridad == 1) security = "Media"; else security = "Alta"; 
+      if (tipo == 0)type = "SC";else if (tipo == 1) type = "BC";else if (tipo == 2) type = "H";else if (tipo == 3) type = "OM";else if (tipo == 4) type = "AE"; else type = "MAC";
+      return "[ " + nombre + ", " + security + ", " + type + " ]";
     }
 }

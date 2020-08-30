@@ -41,14 +41,19 @@ Univ. Carlos III de Madrid (Spain)<br>
         </belief>
 
         <!-- Ha terminado una ronda de turnos -->
-        <belief name="finTurno" class="boolean">
+        <belief name="finRonda" class="boolean">
             <fact>false</fact>
         </belief>
 
-        <!-- Ha terminado una ronda de turnos -->
-        <belief name="siguienteTurno" class="boolean">
+        <!-- Ha terminado un jugador y le toca al siguiente -->
+        <belief name="siguienteJugador" class="boolean">
             <fact>false</fact>
         </belief>
+
+        <!-- Id del jugador actual -->
+		<belief name="jugadorActual" class="AgentIdentifier">
+		<fact>new AgentIdentifier()</fact>
+		</belief>
 
         <!-- Empezar partida -->
         <belief name="empezar" class="boolean">
@@ -72,6 +77,11 @@ Univ. Carlos III de Madrid (Spain)<br>
 
         <!-- Turno -->
         <belief name="turno" class="int">
+            <fact>0</fact>
+        </belief>
+
+        <!-- Cartas a revelar -->
+        <belief name="cartasRevelar" class="int">
             <fact>0</fact>
         </belief>
 
@@ -106,7 +116,25 @@ Univ. Carlos III de Madrid (Spain)<br>
 			<creationcondition>
 				<!-- Que se active cuando haya 8 jugadores -->
                 $beliefbase.jugando &amp;&amp;
-				$beliefbase.empezar &amp;&amp; $beliefbase.numJugadores == 3
+				$beliefbase.empezar &amp;&amp; $beliefbase.numJugadores == 8
+			</creationcondition>
+		</performgoal>
+
+        <!-- Pasar al siguiente jugador -->
+		<performgoal name="siguienteJugador" retry="false">
+			<creationcondition>
+				<!-- Se activa cuando le toque realizar acciones al siguiente jugador -->
+                $beliefbase.jugando &amp;&amp;
+				$beliefbase.siguienteJugador
+			</creationcondition>
+		</performgoal>
+
+        <!-- Pasar al siguiente jugador -->
+		<performgoal name="finRonda" retry="false">
+			<creationcondition>
+				<!-- Se activa cuando le toque realizar acciones al siguiente jugador -->
+                $beliefbase.jugando &amp;&amp;
+				$beliefbase.finRonda
 			</creationcondition>
 		</performgoal>
 	</goals>
@@ -140,6 +168,43 @@ Univ. Carlos III de Madrid (Spain)<br>
             </trigger>
             <contextcondition>$beliefbase.jugando</contextcondition>
         </plan>
+        
+         <!-- Revela la carta seleccionada por el jugador -->
+        <plan name="revelar_cartas">
+            <body class="RevelarCartasPlan" />
+            <trigger>
+                <messageevent ref="Request_Seleccionar_Carta" />
+            </trigger>
+            <contextcondition>$beliefbase.jugando</contextcondition>
+        </plan>
+
+        <!-- Sustituye una carta de la mesa por una de la mano -->
+        <plan name="realizar_sustitucion">
+            <body class="RealizarSustitucion" />
+            <trigger>
+                <messageevent ref="Request_Sustituir_Carta" />
+            </trigger>
+            <contextcondition>$beliefbase.jugando</contextcondition>
+        </plan>
+
+        <!-- Asigno el turno al siguiente jugador -->
+        <plan name="asignar_turno">
+            <body class="AsignarTurno" />
+            <trigger>
+                <goal ref="siguienteJugador" />
+            </trigger>
+            <contextcondition>$beliefbase.jugando</contextcondition>
+        </plan>
+
+        <!-- Finalizar ronda -->
+        <plan name="finalizar_ronda">
+            <body class="FinalizarRonda" />
+            <trigger>
+                <goal ref="finRonda" />
+            </trigger>
+            <contextcondition>$beliefbase.jugando</contextcondition>
+        </plan>
+
 	</plans>
 
     <!-- MENSAJES -->
@@ -285,6 +350,56 @@ Univ. Carlos III de Madrid (Spain)<br>
             </parameter>
             <parameter name="content-class" class="Class" direction="fixed">
                 <value>CambiarTurno.class</value>
+            </parameter>
+        </messageevent>
+
+        <!-- Seleccionar carta -->
+		<messageevent name="Request_Seleccionar_Carta" direction="receive" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.REQUEST</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>SeleccionarCarta.class</value>
+            </parameter>
+        </messageevent>
+
+        <messageevent name="Inform_Carta_Seleccionada" direction="send" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.INFORM</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>SeleccionarCarta.class</value>
+            </parameter>
+        </messageevent>
+
+        <!-- Sustituir carta -->
+		<messageevent name="Request_Sustituir_Carta" direction="receive" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.REQUEST</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>SustituirCarta.class</value>
+            </parameter>
+        </messageevent>
+
+		<messageevent name="Inform_Carta_Sustituida" direction="send" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.INFORM</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>SustituirCarta.class</value>
             </parameter>
         </messageevent>
   </events>

@@ -41,6 +41,11 @@ Univ. Carlos III de Madrid (Spain)<br>
 		<fact>new AgentIdentifier()</fact>
 		</belief>
 
+		<!-- Turno -->
+		<belief name="turno" class="int">
+		<fact>1</fact>
+		</belief>
+
 		<!-- Jugador -->
 		<belief name="jugador" class="Jugador">
 		<fact>new Jugador()</fact>
@@ -56,6 +61,21 @@ Univ. Carlos III de Madrid (Spain)<br>
 		<fact>false</fact>
 		</belief>
 
+		<!-- Habilitar sustitucion en la FASE 2 -->
+		<belief name="sustituir" class="boolean">
+		<fact>false</fact>
+		</belief>
+
+		<!-- Estrategia a seguir por el jugador [Agresiva - 0, Defensiva - 1, Aleatoria - 2] -->
+		<belief name="estrategia" class="int">
+		<fact>2</fact>
+		</belief>
+
+		<!-- Numero de cartas que se han sustituido en el FASE 2 -->
+		<belief name="cartasSustituidas" class="int">
+		<fact>0</fact>
+		</belief>
+
   	</beliefs>
 
   	<!-- METAS -->
@@ -66,11 +86,27 @@ Univ. Carlos III de Madrid (Spain)<br>
 
 		<achievegoal name="unirsePartida"></achievegoal>
 
-		<!-- Objetivo para empezar la partida -->
+		<!-- Solicitar cartas al principio de cada fase -->
 		<performgoal name="solicitarCartas" retry="false">
 			<creationcondition>
 				<!-- Que se active cuando sea el turno del jugador y tenga 1 carta o menos -->
                 $beliefbase.pocasCartas == true &amp;&amp; $beliefbase.turnoJugador == true
+			</creationcondition>
+		</performgoal>
+
+		<!-- Seleccionar carta -->
+		<performgoal name="seleccionarCarta" retry="false">
+			<creationcondition>
+				<!-- Que se active cuando sea el turno del jugador y tenga 2 carta o mas -->
+                $beliefbase.pocasCartas == false &amp;&amp; $beliefbase.turnoJugador == true &amp;&amp; $beliefbase.sustituir == false
+			</creationcondition>
+		</performgoal>
+
+		<!-- Sustituir carta -->
+		<performgoal name="sustituirCarta" retry="false">
+			<creationcondition>
+				<!-- Que se active cuando sea el turno del jugador, tenga 2 carta o mas y sea la FASE 2 -->
+                $beliefbase.pocasCartas == false &amp;&amp; $beliefbase.turnoJugador == true &amp;&amp; $beliefbase.sustituir == true 
 			</creationcondition>
 		</performgoal>
 
@@ -103,6 +139,25 @@ Univ. Carlos III de Madrid (Spain)<br>
 			<trigger><messageevent ref="Inform_Dar_Cartas" /></trigger>
 		</plan>
 
+		<plan name="Seleccionar_carta">
+            <body class="SeleccionarCartaPlan" />
+			<trigger> <goal ref="seleccionarCarta"/> </trigger>
+		</plan>
+
+		<plan name="Sustituir_carta">
+            <body class="SustituirCartaPlan" />
+			<trigger> 
+				<goal ref="sustituirCarta"/>
+			</trigger>		
+		</plan>
+
+		<plan name="Sustituir_otra_carta">
+            <body class="SustituirCartaPlan" />
+			<trigger>
+				<messageevent ref="Inform_Carta_Sustituida" />
+			</trigger>	
+			<contextcondition>$beliefbase.cartasSustituidas == 1</contextcondition>
+		</plan>
 	</plans>
 
 	<!-- EVENTOS -->
@@ -197,6 +252,56 @@ Univ. Carlos III de Madrid (Spain)<br>
             </parameter>
             <parameter name="content-class" class="Class" direction="fixed">
                 <value>DarCartas.class</value>
+            </parameter>
+        </messageevent>
+
+		<!-- Seleccionar carta -->
+		<messageevent name="Request_Seleccionar_Carta" direction="send" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.REQUEST</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>SeleccionarCarta.class</value>
+            </parameter>
+        </messageevent>
+
+		<messageevent name="Inform_Carta_Seleccionada" direction="receive" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.INFORM</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>SeleccionarCarta.class</value>
+            </parameter>
+        </messageevent>
+
+		<!-- Sustituir carta -->
+		<messageevent name="Request_Sustituir_Carta" direction="send" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.REQUEST</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>SustituirCarta.class</value>
+            </parameter>
+        </messageevent>
+
+		<messageevent name="Inform_Carta_Sustituida" direction="receive" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.INFORM</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>SustituirCarta.class</value>
             </parameter>
         </messageevent>
 
