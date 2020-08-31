@@ -41,6 +41,11 @@ Univ. Carlos III de Madrid (Spain)<br>
 		<fact>new AgentIdentifier()</fact>
 		</belief>
 
+		<!-- Mesa -->
+		<belief name="mesa_objeto" class="Mesa">
+		<fact>new Mesa()</fact>
+		</belief>
+
 		<!-- Turno -->
 		<belief name="turno" class="int">
 		<fact>1</fact>

@@ -8,6 +8,7 @@ import jadex.runtime.Plan;
 import jadex.runtime.IGoal;
 import ontology.actions.UnirsePartida;
 import ontology.concepts.Jugador;
+import ontology.concepts.Carta;
 import ontology.concepts.Mesa;
 import ontology.predicates.JugadorUnido;
 import ontology.predicates.TurnoAsignado;
@@ -20,7 +21,7 @@ public class AsignarTurno extends Plan
 
         // Para mejor sincronizacion
         try {   
-            Thread.sleep(50);
+            Thread.sleep(200);
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -32,16 +33,36 @@ public class AsignarTurno extends Plan
 
         getBeliefbase().getBelief("siguienteJugador").setFact(false);
 
+
+
         for (int i = 0; i < mesa.getJugadores().size(); i++){
             if (mesa.getJugadores().get(i).getIdAgente().equals(jugadorActual)){
+
                 // Ultimo jugador
                 if (i == mesa.getJugadores().size() - 1){
-                    // Ultimo Turno de la FASE 1
-                    if ((int) getBeliefbase().getBelief("turno").getFact() == 5){
-                        System.out.println("\n ---------------");
-                        System.out.println("| [INFO] FASE 2 |");
-                        System.out.println(" ---------------");
+
+                    int p = 0;
+                    //Cambiar mano a la IZQ
+                    if((int)getBeliefbase().getBelief("turno").getFact() < 6){
+                        ArrayList<Carta> primera = new ArrayList<>();
+                        primera = (ArrayList) mesa.getJugadores().get(0).getMano().clone();
+                        for(p = 0; p < mesa.getJugadores().size() - 1; p++){
+                            mesa.getJugadores().get(p).setMano(mesa.getJugadores().get(p + 1).getMano());
+                        }
+                        mesa.getJugadores().get(p).setMano(primera);
+                        System.out.println("[INFO] Cambio de manos al jugador de la izquierda");
+                    //Cambiar mano a la DCHA
+                    }else{
+                        ArrayList<Carta> ultima = new ArrayList<>();
+                        ultima = (ArrayList) mesa.getJugadores().get(mesa.getJugadores().size() - 1).getMano().clone();
+                        for(p = mesa.getJugadores().size() - 1; p > 0; p--){
+                            mesa.getJugadores().get(p).setMano(mesa.getJugadores().get(p - 1).getMano());
+                        }
+                        mesa.getJugadores().get(p).setMano(ultima);
+                        System.out.println("[INFO] Cambio de manos al jugador de la derecha");
                     }
+
+                
                     siguienteJugador = mesa.getJugadores().get(0);
 
                     for (int j = 1; j < mesa.getJugadores().size(); j++){
@@ -53,7 +74,12 @@ public class AsignarTurno extends Plan
                             }
                         }
                     }
-
+                    // Ultimo Turno de la FASE 1
+                    if ((int) getBeliefbase().getBelief("turno").getFact() == 5){
+                        System.out.println("\n ---------------");
+                        System.out.println("| [INFO] FASE 2 |");
+                        System.out.println(" ---------------");
+                    }
 
                     //Si la mano del siguiente jugador esta vacia significa que ya no quedan jugadores con cartas
                     if (siguienteJugador.getMano() != null){
@@ -70,6 +96,7 @@ public class AsignarTurno extends Plan
                     
 
 
+
                     getBeliefbase().getBelief("turno").setFact((int) getBeliefbase().getBelief("turno").getFact() + 1);
                     getBeliefbase().getBelief("jugadorActual").setFact(siguienteJugador.getIdAgente());
                     System.out.println("\n[INFO] TURNO " + getBeliefbase().getBelief("turno").getFact());
@@ -77,13 +104,14 @@ public class AsignarTurno extends Plan
                     IMessageEvent respuesta = createMessageEvent("Inform_Turno_Asignado");
                     TurnoAsignado predicado = new TurnoAsignado();
                     predicado.setJugador(siguienteJugador);
-                    predicado.setJugadores(mesa.getJugadores());
+                    predicado.setMesa(mesa);
                     System.out.println("\n[INFO] Decide el jugador con id " + siguienteJugador.getIdAgente() + "\n");
                     respuesta.setContent(predicado);
                     respuesta.getParameterSet(SFipa.RECEIVERS).addValue(siguienteJugador.getIdAgente());
                     sendMessage(respuesta);
                     break;
                 }else{
+
                     siguienteJugador = mesa.getJugadores().get(i + 1);
                     
                     for (int j = i + 1; j < mesa.getJugadores().size(); j++){
@@ -116,7 +144,7 @@ public class AsignarTurno extends Plan
                     IMessageEvent respuesta = createMessageEvent("Inform_Turno_Asignado");
                     TurnoAsignado predicado = new TurnoAsignado();
                     predicado.setJugador(siguienteJugador);
-                    predicado.setJugadores(mesa.getJugadores());
+                    predicado.setMesa(mesa);
                     System.out.println("\n[INFO] Decide el jugador con id " + siguienteJugador.getIdAgente() + "\n");
                     respuesta.setContent(predicado);
                     respuesta.getParameterSet(SFipa.RECEIVERS).addValue(siguienteJugador.getIdAgente());

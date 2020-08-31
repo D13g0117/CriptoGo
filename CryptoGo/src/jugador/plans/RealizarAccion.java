@@ -7,6 +7,7 @@ import jadex.runtime.IGoal;
 
 import ontology.actions.*;
 import ontology.concepts.*;
+import ontology.predicates.TurnoAsignado;
 
 
 
@@ -14,8 +15,14 @@ public class RealizarAccion extends Plan
 {
 	public void body()
 	{
-        Jugador jugador = (Jugador) getBeliefbase().getBelief("jugador").getFact();
-        jugador.setIdAgente((AgentIdentifier) getAgentIdentifier());
+        IMessageEvent peticion = (IMessageEvent) getInitialEvent();
+        TurnoAsignado mensajeRecibido = (TurnoAsignado) peticion.getContent();
+        Jugador jugador = mensajeRecibido.getJugador();
+        Mesa mesa = mensajeRecibido.getMesa();
+      
+
+        //Jugador jugador = (Jugador) getBeliefbase().getBelief("jugador").getFact();
+        //jugador.setIdAgente((AgentIdentifier) getAgentIdentifier());
 
         if ((int) getBeliefbase().getBelief("turno").getFact() == 1){
             // Decidir estrategia

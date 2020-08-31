@@ -77,10 +77,12 @@ public class SustituirCartaPlan extends Plan
         ArrayList<Carta> mano = new ArrayList<>();
         Carta cartaASustituir = new Carta();
         Carta cartaSustituta = new Carta();
+        boolean cartasYaSeleccionadas = false;
 
         ArrayList<ArrayList<Carta>> criptoKits = jugador.getSeleccion().getCriptokits();
 
         // SELECCION DE CARTA A SUSTITUIR
+        //Si hay criptokits formados
         if(!criptoKits.isEmpty()){
             ArrayList<Carta> cartasNoCriptoKit = new ArrayList<>();
             cartasNoCriptoKit = (ArrayList) jugador.getSeleccion().getCartasSeleccionadas().clone();
@@ -90,7 +92,20 @@ public class SustituirCartaPlan extends Plan
             if(!cartasNoCriptoKit.isEmpty()){
                 int aleatorio = (int) (Math.random()*cartasNoCriptoKit.size());
                 cartaASustituir = cartasNoCriptoKit.get(aleatorio);
-            }    
+            } 
+            //Sustituir carta por una con mejor seguridad
+            for(int j = 0; j < criptoKits.size(); j++){
+                for(int k = 0; k < criptoKits.get(j).size(); k++){
+                    for(int l = 0; l < jugador.getMano().size(); l++){
+                        if(jugador.getMano().get(l).getTipo() == criptoKits.get(j).get(k).getTipo() && jugador.getMano().get(l).getSeguridad() > criptoKits.get(j).get(k).getSeguridad()){
+                            cartaASustituir = criptoKits.get(j).get(k);
+                            cartaSustituta = jugador.getMano().get(l);
+                            cartasYaSeleccionadas = true;
+                            break;
+                        }
+                    }
+                }
+            }   
         }else{
             int aleatorio = (int) (Math.random()*jugador.getSeleccion().getCartasSeleccionadas().size());
             cartaASustituir = jugador.getSeleccion().getCartasSeleccionadas().get(aleatorio);
@@ -98,18 +113,20 @@ public class SustituirCartaPlan extends Plan
 
         //SELECCION DE CARTA SUSTITUTA
         mano = jugador.getMano();
-        // Agresiva
-        if ((int) getBeliefbase().getBelief("estrategia").getFact() == 0){
-            int numeroAleatorio = (int) (Math.random()*mano.size());
-            cartaSustituta = mano.get(numeroAleatorio);
-        // Defensiva
-        } else if ((int) getBeliefbase().getBelief("estrategia").getFact() == 1){
-            int numeroAleatorio = (int) (Math.random()*mano.size());
-            cartaSustituta = mano.get(numeroAleatorio);
-        // Aleatoria
-        } else{
-            int numeroAleatorio = (int) (Math.random()*mano.size()); 
-            cartaSustituta = mano.get(numeroAleatorio);
+            if(!cartasYaSeleccionadas){
+            // Agresiva
+            if ((int) getBeliefbase().getBelief("estrategia").getFact() == 0){
+                int numeroAleatorio = (int) (Math.random()*mano.size());
+                cartaSustituta = mano.get(numeroAleatorio);
+            // Defensiva
+            } else if ((int) getBeliefbase().getBelief("estrategia").getFact() == 1){
+                int numeroAleatorio = (int) (Math.random()*mano.size());
+                cartaSustituta = mano.get(numeroAleatorio);
+            // Aleatoria
+            } else{
+                int numeroAleatorio = (int) (Math.random()*mano.size()); 
+                cartaSustituta = mano.get(numeroAleatorio);
+            }
         }
         
         

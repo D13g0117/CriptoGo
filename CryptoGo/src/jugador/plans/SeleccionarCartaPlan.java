@@ -20,7 +20,7 @@ public class SeleccionarCartaPlan extends Plan
 	{
         // Para mejor sincronizacion
         try {   
-            Thread.sleep(50);
+            Thread.sleep(100);
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -32,53 +32,69 @@ public class SeleccionarCartaPlan extends Plan
         int estrategia = (int) getBeliefbase().getBelief("estrategia").getFact();
         SeleccionarCarta seleccion = new SeleccionarCarta();
         getBeliefbase().getBelief("turno").setFact((int) getBeliefbase().getBelief("turno").getFact() + 1);
+
         // Agresiva
         if ((int) getBeliefbase().getBelief("estrategia").getFact() == 0){
             System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " opta por una estrategia 'Agresiva'");
+
+            //Estrategia
             int numeroAleatorio = (int) (Math.random()*mano.size());
             seleccion.setCartaSeleccionada(mano.remove(numeroAleatorio));
+
+            //Actualizar informacion
             jugador.setMano(mano);
             jugador.getSeleccion().getCartasSeleccionadas().add(seleccion.getCartaSeleccionada());
             getBeliefbase().getBelief("jugador").setFact(jugador);
-
             getBeliefbase().getBelief("turnoJugador").setFact(false);
             RobarCartas();
+            //Enviar mensaje
             IMessageEvent msgsend = createMessageEvent("Request_Seleccionar_Carta");          
             msgsend.setContent(seleccion);
             msgsend.getParameterSet(SFipa.RECEIVERS).addValue(mesa);
             System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " selecciona una carta de su mano");
+
             sendMessage(msgsend);
         // Defensiva
         } else if ((int) getBeliefbase().getBelief("estrategia").getFact() == 1){
             System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " opta por una estrategia 'Defensiva'");
+
+            //Estrategia
             int numeroAleatorio = (int) (Math.random()*mano.size());
             seleccion.setCartaSeleccionada(mano.remove(numeroAleatorio));
+
+            //Actualizar informacion
             jugador.setMano(mano);
             jugador.getSeleccion().getCartasSeleccionadas().add(seleccion.getCartaSeleccionada());
             getBeliefbase().getBelief("jugador").setFact(jugador);
-
             getBeliefbase().getBelief("turnoJugador").setFact(false);
             RobarCartas();
+            //Enviar mensaje
             IMessageEvent msgsend = createMessageEvent("Request_Seleccionar_Carta");          
             msgsend.setContent(seleccion);
             msgsend.getParameterSet(SFipa.RECEIVERS).addValue(mesa);
             System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " selecciona una carta de su mano");
-            sendMessage(msgsend);
+
+            sendMessage(msgsend);        
         // Aleatoria
         } else{
             System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " opta por una estrategia 'Aleatoria'");
+
+            //Estrategia
             int numeroAleatorio = (int) (Math.random()*mano.size());
             seleccion.setCartaSeleccionada(mano.remove(numeroAleatorio));
+
+            //Actualizar informacion
             jugador.setMano(mano);
             jugador.getSeleccion().getCartasSeleccionadas().add(seleccion.getCartaSeleccionada());
             getBeliefbase().getBelief("jugador").setFact(jugador);
-
             getBeliefbase().getBelief("turnoJugador").setFact(false);
             RobarCartas();
+            //Enviar mensaje
             IMessageEvent msgsend = createMessageEvent("Request_Seleccionar_Carta");          
             msgsend.setContent(seleccion);
             msgsend.getParameterSet(SFipa.RECEIVERS).addValue(mesa);
             System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " selecciona una carta de su mano");
+
             sendMessage(msgsend);
         }
     }

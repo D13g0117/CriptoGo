@@ -3,11 +3,12 @@ package ontology.predicates;
 import java.util.ArrayList;
 
 import ontology.concepts.Jugador;
+import ontology.concepts.Mesa;
 
 public class TurnoAsignado extends Predicado {
 
   private Jugador jugador;
-  private ArrayList<Jugador> jugadores;
+  private Mesa mesa;
 
   public TurnoAsignado() {
   }
@@ -19,11 +20,11 @@ public class TurnoAsignado extends Predicado {
     this.jugador = jugador;
   }
 
-  public ArrayList<Jugador> getJugadores() {
-    return jugadores;
+  public Mesa getMesa() {
+    return mesa;
   }
-  public void setJugadores(final ArrayList<Jugador> jugadores) {
-    this.jugadores = jugadores;
+  public void setMesa(final Mesa mesa) {
+    this.mesa = mesa;
   }
 
 }

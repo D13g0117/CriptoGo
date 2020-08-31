@@ -27,6 +27,9 @@ public class DarCartasPlan extends Plan
         // Si turno 1 -> 6 Cartas
         // Si turno 6 -> 4 Cartas
         // Refuse
+
+
+
         
         if ((int)getBeliefbase().getBelief("turno").getFact() == 1){
             for (int i = 0; i < 6; i ++){

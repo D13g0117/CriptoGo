@@ -35,6 +35,7 @@ public class RevelarCartasPlan extends Plan
                 for (int j = 0; j < mesa.getJugadores().get(i).getMano().size(); j++){
                     if (mesa.getJugadores().get(i).getMano().get(j).Mostrar().equals(cartaSeleccionada.Mostrar())){
                         mesa.getJugadores().get(i).getMano().remove(j);
+                        break;
                     }
                 }          
             }
@@ -55,6 +56,7 @@ public class RevelarCartasPlan extends Plan
         msgsend.setContent(accion);
         msgsend.getParameterSet(SFipa.RECEIVERS).addValue(idJugador);
         System.out.println("[INFO] Carta seleccionada por el jugador con id " + idJugador + ": " + cartaSeleccionada.Mostrar());
+
         sendMessage(msgsend);
     }
 }
