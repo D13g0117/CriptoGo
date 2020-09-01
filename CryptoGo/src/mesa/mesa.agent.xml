@@ -116,7 +116,7 @@ Univ. Carlos III de Madrid (Spain)<br>
 			<creationcondition>
 				<!-- Que se active cuando haya 8 jugadores -->
                 $beliefbase.jugando &amp;&amp;
-				$beliefbase.empezar &amp;&amp; $beliefbase.numJugadores == 8
+				$beliefbase.empezar &amp;&amp; $beliefbase.numJugadores == 3
 			</creationcondition>
 		</performgoal>
 

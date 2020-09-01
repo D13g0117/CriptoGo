@@ -13,7 +13,7 @@ public class SolicitarCartas extends Accion {
   }
 
   AgentIdentifier sender;
-
+  int numCartasARobar = 0;
   public AgentIdentifier getSenderID() {
     return sender;
   }
@@ -21,5 +21,11 @@ public class SolicitarCartas extends Accion {
       this.sender = sender;
   }
 
+  public int getNumCartasARobar() {
+    return numCartasARobar;
+  }
+  public void setNumCartasARobar(int numCartasARobar) {
+    this.numCartasARobar = numCartasARobar;
+  }
 
 }

@@ -21,7 +21,7 @@ public class AsignarTurno extends Plan
 
         // Para mejor sincronizacion
         try {   
-            Thread.sleep(200);
+            Thread.sleep(50);
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -41,27 +41,27 @@ public class AsignarTurno extends Plan
                 // Ultimo jugador
                 if (i == mesa.getJugadores().size() - 1){
 
-                    int p = 0;
-                    //Cambiar mano a la IZQ
-                    if((int)getBeliefbase().getBelief("turno").getFact() < 6){
-                        ArrayList<Carta> primera = new ArrayList<>();
-                        primera = (ArrayList) mesa.getJugadores().get(0).getMano().clone();
-                        for(p = 0; p < mesa.getJugadores().size() - 1; p++){
-                            mesa.getJugadores().get(p).setMano(mesa.getJugadores().get(p + 1).getMano());
+
+                    if((int)getBeliefbase().getBelief("turno").getFact() == 6){
+                        Jugador jugadorAux = new Jugador();
+                        for(int q = 0; q < mesa.getJugadores().size() / 2; q++){
+                            jugadorAux = mesa.getJugadores().get(q);
+                            mesa.getJugadores().set(q, mesa.getJugadores().get(mesa.getJugadores().size() - 1 - q));
+                            mesa.getJugadores().set(mesa.getJugadores().size() - 1 - q, jugadorAux);
                         }
-                        mesa.getJugadores().get(p).setMano(primera);
-                        System.out.println("[INFO] Cambio de manos al jugador de la izquierda");
+                        System.out.println("[INFO] Cambio del sentido de juego");
                     //Cambiar mano a la DCHA
-                    }else{
-                        ArrayList<Carta> ultima = new ArrayList<>();
-                        ultima = (ArrayList) mesa.getJugadores().get(mesa.getJugadores().size() - 1).getMano().clone();
-                        for(p = mesa.getJugadores().size() - 1; p > 0; p--){
-                            mesa.getJugadores().get(p).setMano(mesa.getJugadores().get(p - 1).getMano());
-                        }
-                        mesa.getJugadores().get(p).setMano(ultima);
-                        System.out.println("[INFO] Cambio de manos al jugador de la derecha");
                     }
 
+                    //Cambio de manos
+                    int p = 0;
+                    ArrayList<Carta> primera = new ArrayList<>();
+                    primera = (ArrayList) mesa.getJugadores().get(0).getMano().clone();
+                    for(p = 0; p < mesa.getJugadores().size() - 1; p++){
+                        mesa.getJugadores().get(p).setMano(mesa.getJugadores().get(p + 1).getMano());
+                    }
+                    mesa.getJugadores().get(p).setMano(primera);
+                    System.out.println("[INFO] Cambio de mano al siguiente jugador");
                 
                     siguienteJugador = mesa.getJugadores().get(0);
 

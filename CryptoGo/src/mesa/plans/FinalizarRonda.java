@@ -18,7 +18,7 @@ public class FinalizarRonda extends Plan
 	{
         Mesa mesa = (Mesa) getBeliefbase().getBelief("mesa").getFact();
         int [] puntos = new int [mesa.getJugadores().size()];
-        
+        ArrayList<Jugador> empatados = new ArrayList<>();
 
         //Puntos de cada jugador
         for (int i = 0;  i < mesa.getJugadores().size(); i++){
@@ -42,9 +42,21 @@ public class FinalizarRonda extends Plan
 				indiceDelMayor = x;
 			}
         }
-        
-        System.out.println("GANADOR: " + mesa.getJugadores().get(indiceDelMayor).getIdAgente());
+        //Comprobar empates
+        for (int x = 1; x < puntos.length; x++) {
+			if (puntos[indiceDelMayor] == puntos[x]) {
+				empatados.add(mesa.getJugadores().get(x));
+            }
+        }
 
+        if(!empatados.isEmpty() && empatados.size() > 1){
+            System.out.println("EMPATADOS: ");
+            for (int x = 0; x < empatados.size(); x++) {
+                System.out.println(empatados.get(x).getIdAgente());
+            }
+        }else{
+            System.out.print("GANADOR: " + mesa.getJugadores().get(indiceDelMayor).getIdAgente());
+        }
     }
 
     public int getPuntos (ArrayList<Carta> criptoKit){

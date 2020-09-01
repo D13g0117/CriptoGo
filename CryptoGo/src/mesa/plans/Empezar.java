@@ -41,6 +41,7 @@ public class Empezar extends Plan
 		IMessageEvent respuesta = createMessageEvent("Inform_Turno_Asignado");
 		TurnoAsignado predicado = new TurnoAsignado();
 		predicado.setJugador(mesa.getJugadores().get(0));
+		predicado.setMesa(mesa);
 		System.out.println("\n[INFO] Decide el jugador con id " + mesa.getJugadores().get(0).getIdAgente() + "\n");
 		respuesta.setContent(predicado);
 		respuesta.getParameterSet(SFipa.RECEIVERS).addValue(mesa.getJugadores().get(0).getIdAgente());

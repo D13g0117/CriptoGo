@@ -34,6 +34,15 @@ public class SustituirCartaPlan extends Plan
 
         if (mano.size() < 4){
             getBeliefbase().getBelief("sustituir").setFact(false);
+            AgentIdentifier mesa = (AgentIdentifier) getBeliefbase().getBelief("mesa").getFact();
+            IMessageEvent msgsend = createMessageEvent("Request_Solicitar_Cartas");
+            SolicitarCartas solicitud = new SolicitarCartas();
+            solicitud.setSenderID(jugador.getIdAgente());
+            solicitud.setNumCartasARobar(2);
+            msgsend.setContent(solicitud);
+            msgsend.getParameterSet(SFipa.RECEIVERS).addValue(mesa);
+            System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " solicita cartas");
+            sendMessage(msgsend);
         }else{
 
         
@@ -67,6 +76,15 @@ public class SustituirCartaPlan extends Plan
 
          }else{
             getBeliefbase().getBelief("sustituir").setFact(false);
+            AgentIdentifier mesa = (AgentIdentifier) getBeliefbase().getBelief("mesa").getFact();
+            IMessageEvent msgsend = createMessageEvent("Request_Solicitar_Cartas");
+            SolicitarCartas solicitud = new SolicitarCartas();
+            solicitud.setSenderID(jugador.getIdAgente());
+            solicitud.setNumCartasARobar(1);
+            msgsend.setContent(solicitud);
+            msgsend.getParameterSet(SFipa.RECEIVERS).addValue(mesa);
+            System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " solicita cartas");
+            sendMessage(msgsend);
          }
         }
     }
