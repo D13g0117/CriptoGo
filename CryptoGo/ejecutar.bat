@@ -21,6 +21,9 @@ src\lib\xpp3.jar;^
 src;^
 src\lib\commons-commons\commons-codec-1.3.jar
 
-java jadex.adapter.standalone.Platform
+FOR /L %%A IN (1,1,1) DO (
+    java jadex.adapter.standalone.Platform "mesa:jar:file:/C:\Users\diego\OneDrive\TFG\Proyecto\CriptoGo\CryptoGo\CryptoGoJadex!/src/mesa/mesa.agent.xml(default)" "jugador1:jar:file:/C:\Users\diego\OneDrive\TFG\Proyecto\CriptoGo\CryptoGo\CryptoGoJadex!/src/jugador/jugador.agent.xml(default)" "jugador2:jar:file:/C:\Users\diego\OneDrive\TFG\Proyecto\CriptoGo\CryptoGo\CryptoGoJadex!/src/jugador/jugador.agent.xml(default)" "jugador3:jar:file:/C:\Users\diego\OneDrive\TFG\Proyecto\CriptoGo\CryptoGo\CryptoGoJadex!/src/jugador/jugador.agent.xml(default)" "jugador4:jar:file:/C:\Users\diego\OneDrive\TFG\Proyecto\CriptoGo\CryptoGo\CryptoGoJadex!/src/jugador/jugador.agent.xml(default)" "jugador5:jar:file:/C:\Users\diego\OneDrive\TFG\Proyecto\CriptoGo\CryptoGo\CryptoGoJadex!/src/jugador/jugador.agent.xml(default)" "jugador6:jar:file:/C:\Users\diego\OneDrive\TFG\Proyecto\CriptoGo\CryptoGo\CryptoGoJadex!/src/jugador/jugador.agent.xml(default)" "jugador7:jar:file:/C:\Users\diego\OneDrive\TFG\Proyecto\CriptoGo\CryptoGo\CryptoGoJadex!/src/jugador/jugador.agent.xml(default)" "jugador8:jar:file:/C:\Users\diego\OneDrive\TFG\Proyecto\CriptoGo\CryptoGo\CryptoGoJadex!/src/jugador/jugador.agent.xml(default)" -nogui
+)
+
 pause 
 

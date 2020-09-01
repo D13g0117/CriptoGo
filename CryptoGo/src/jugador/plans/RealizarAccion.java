@@ -27,6 +27,8 @@ public class RealizarAccion extends Plan
         if ((int) getBeliefbase().getBelief("turno").getFact() == 1){
             // Decidir estrategia
             int estrategia = (int) (Math.random()*3);
+            jugador.setEstrategia(1);
+            getBeliefbase().getBelief("jugador").setFact(jugador);
             getBeliefbase().getBelief("estrategia").setFact(estrategia);
         }
 
@@ -35,6 +37,7 @@ public class RealizarAccion extends Plan
             //Habilitar sustitucion
             getBeliefbase().getBelief("sustituir").setFact(true);
         }
+        jugador.setEstrategia((int) getBeliefbase().getBelief("estrategia").getFact());
         getBeliefbase().getBelief("jugador").setFact(jugador);
         getBeliefbase().getBelief("mesa_objeto").setFact(mesa);
         getBeliefbase().getBelief("turnoJugador").setFact(true);

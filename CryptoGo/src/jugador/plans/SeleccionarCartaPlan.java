@@ -15,21 +15,15 @@ public class SeleccionarCartaPlan extends Plan
 {
 
     Jugador jugador = new Jugador();
+    Mesa mesaObjeto = new Mesa();
     ArrayList<Carta> mano = new ArrayList<>();
     ArrayList<Carta> cartasSeleccionadas = new ArrayList<>();
-    Mesa mesaObjeto = new Mesa();
 
 	public void body()
 	{
-        // Para mejor sincronizacion
-        try {   
-            Thread.sleep(50);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
 
         jugador = (Jugador) getBeliefbase().getBelief("jugador").getFact();
+        jugador.setEstrategia((int) getBeliefbase().getBelief("estrategia").getFact());
         mesaObjeto = (Mesa) getBeliefbase().getBelief("mesa_objeto").getFact();
         AgentIdentifier mesa = (AgentIdentifier) getBeliefbase().getBelief("mesa").getFact();
         ArrayList<Carta> mano = jugador.getMano();
@@ -40,9 +34,8 @@ public class SeleccionarCartaPlan extends Plan
 
         // Agresiva
         if ((int) getBeliefbase().getBelief("estrategia").getFact() == 0){
-            System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " opta por una estrategia 'Agresiva'");
+            System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " opta por una estrategia 'Avanzada'");
             Carta cartaAux = new Carta();
-            
             //Estrategia
             if((int) getBeliefbase().getBelief("turno").getFact() - 1 == 1){
                 cartaAux = primeraFase(mano);
@@ -59,6 +52,7 @@ public class SeleccionarCartaPlan extends Plan
             seleccion.setCartaSeleccionada(cartaAux);
             jugador.setMano(mano);
             jugador.getSeleccion().getCartasSeleccionadas().add(seleccion.getCartaSeleccionada());
+            jugador.setEstrategia(estrategia);
             getBeliefbase().getBelief("jugador").setFact(jugador);
             getBeliefbase().getBelief("turnoJugador").setFact(false);
             RobarCartas();
@@ -71,7 +65,7 @@ public class SeleccionarCartaPlan extends Plan
             sendMessage(msgsend);
         // Defensiva
         } else if ((int) getBeliefbase().getBelief("estrategia").getFact() == 1){
-            System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " opta por una estrategia 'Defensiva'");
+            System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " opta por una estrategia 'Estandar'");
             Carta cartaAux = new Carta();
             
             //Estrategia
@@ -89,6 +83,7 @@ public class SeleccionarCartaPlan extends Plan
             //Actualizar informacion
             seleccion.setCartaSeleccionada(cartaAux);
             jugador.setMano(mano);
+            jugador.setEstrategia(estrategia);
             jugador.getSeleccion().getCartasSeleccionadas().add(seleccion.getCartaSeleccionada());
             getBeliefbase().getBelief("jugador").setFact(jugador);
             getBeliefbase().getBelief("turnoJugador").setFact(false);
@@ -112,6 +107,7 @@ public class SeleccionarCartaPlan extends Plan
             //Actualizar informacion
             seleccion.setCartaSeleccionada(cartaAux);
             jugador.setMano(mano);
+            jugador.setEstrategia(estrategia);
             jugador.getSeleccion().getCartasSeleccionadas().add(seleccion.getCartaSeleccionada());
             getBeliefbase().getBelief("jugador").setFact(jugador);
             getBeliefbase().getBelief("turnoJugador").setFact(false);

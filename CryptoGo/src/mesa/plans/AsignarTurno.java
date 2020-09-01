@@ -95,8 +95,6 @@ public class AsignarTurno extends Plan
                     }
                     
 
-
-
                     getBeliefbase().getBelief("turno").setFact((int) getBeliefbase().getBelief("turno").getFact() + 1);
                     getBeliefbase().getBelief("jugadorActual").setFact(siguienteJugador.getIdAgente());
                     System.out.println("\n[INFO] TURNO " + getBeliefbase().getBelief("turno").getFact());

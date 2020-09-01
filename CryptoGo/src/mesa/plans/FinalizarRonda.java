@@ -1,5 +1,7 @@
 package mesa.plans;
 
+import java.io.*;
+import java.io.FileWriter;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -14,11 +16,13 @@ import ontology.concepts.*;
 
 public class FinalizarRonda extends Plan
 {
+    ArrayList<Jugador> empatados = new ArrayList<>();
+    int puntosGanador = 0;
 	public void body()
 	{
         Mesa mesa = (Mesa) getBeliefbase().getBelief("mesa").getFact();
         int [] puntos = new int [mesa.getJugadores().size()];
-        ArrayList<Jugador> empatados = new ArrayList<>();
+        
 
         //Puntos de cada jugador
         for (int i = 0;  i < mesa.getJugadores().size(); i++){
@@ -42,21 +46,99 @@ public class FinalizarRonda extends Plan
 				indiceDelMayor = x;
 			}
         }
+        puntosGanador = puntos[indiceDelMayor];
         //Comprobar empates
         for (int x = 1; x < puntos.length; x++) {
 			if (puntos[indiceDelMayor] == puntos[x]) {
 				empatados.add(mesa.getJugadores().get(x));
             }
         }
-
         if(!empatados.isEmpty() && empatados.size() > 1){
             System.out.println("EMPATADOS: ");
             for (int x = 0; x < empatados.size(); x++) {
                 System.out.println(empatados.get(x).getIdAgente());
             }
+            escribirResultados();
+            IGoal sd = createGoal("ams_shutdown_platform");
+            // sd.getParameter("ams").setValue(ams); // Set ams in case of remote platform
+            dispatchSubgoal(sd);
         }else{
-            System.out.print("GANADOR: " + mesa.getJugadores().get(indiceDelMayor).getIdAgente());
+            System.out.println("GANADOR: " + mesa.getJugadores().get(indiceDelMayor).getIdAgente());
+            escribirResultados();
+            IGoal sd = createGoal("ams_shutdown_platform");
+            // sd.getParameter("ams").setValue(ams); // Set ams in case of remote platform
+            dispatchSubgoal(sd);
         }
+    }
+
+    public void escribirResultados(){
+
+        String resultados = "./resultados.txt";
+        File fichero = new File(resultados);
+        try {
+            // A partir del objeto File creamos el fichero físicamente
+            if(fichero.createNewFile()){
+                BufferedWriter bw = new BufferedWriter(new FileWriter(resultados, true));
+                bw.write("GANADORES\tPUNTOS\tESTRATEGIA\tCRIPTOKITS\n");
+                for (int i = 0; i < empatados.size(); i++){
+                    ArrayList<ArrayList<Carta>> criptoKits = (ArrayList) empatados.get(i).getSeleccion().getCriptokits().clone();
+                    String tipoCriptokit = getNombreCriptokits(criptoKits);
+                    if(empatados.get(i).getEstrategia() == 0){
+                        bw.write(empatados.get(i).getIdAgente() + "\t" + puntosGanador + "\tavanzada\t" + tipoCriptokit + "\n");
+                    }else if(empatados.get(i).getEstrategia() == 1){
+                        bw.write(empatados.get(i).getIdAgente() + "\t" + puntosGanador + "\testandar\t" + tipoCriptokit + "\n");
+                    }else{
+                        bw.write(empatados.get(i).getIdAgente() + "\t" + puntosGanador + "\taleatoria\t" + tipoCriptokit + "\n");
+                    }
+                }              
+                bw.close();
+            }else{
+                BufferedWriter bw = new BufferedWriter(new FileWriter(resultados, true));
+                for (int i = 0; i < empatados.size(); i++){
+                    ArrayList<ArrayList<Carta>> criptoKits = (ArrayList) empatados.get(i).getSeleccion().getCriptokits().clone();
+                    String tipoCriptokit = getNombreCriptokits(criptoKits);
+                    if(empatados.get(i).getEstrategia() == 0){
+                        bw.write(empatados.get(i).getIdAgente() + "\t" + puntosGanador + "\tavanzada\t" + tipoCriptokit + "\n");
+                    }else if(empatados.get(i).getEstrategia() == 1){
+                        bw.write(empatados.get(i).getIdAgente() + "\t" + puntosGanador + "\testandar\t" + tipoCriptokit + "\n");
+                    }else{
+                        bw.write(empatados.get(i).getIdAgente() + "\t" + puntosGanador + "\taleatoria\t" + tipoCriptokit + "\n");
+                    }
+                }              
+                bw.close();
+            }
+          } catch (IOException ioe) {
+            ioe.printStackTrace();
+          }
+    }
+
+    public String getNombreCriptokits(ArrayList<ArrayList<Carta>> criptoKits){
+        String tipoCriptoKit = "";
+        for (int j = 0; j < criptoKits.size(); j++){
+            if (criptoKits.get(j).size() == 2) tipoCriptoKit = tipoCriptoKit + "CK1, ";
+            else if(criptoKits.get(j).size() == 3){
+                for(int z = 0; z < criptoKits.get(j).size(); z++){
+                    if (criptoKits.get(j).get(z).getTipo() == 1){ //ROSA
+                        tipoCriptoKit = tipoCriptoKit + "CK2a, ";
+                    }else if(criptoKits.get(j).get(z).getTipo() == 2){ //NARANJA
+                        tipoCriptoKit = tipoCriptoKit + "CK2b, ";
+                    }
+                }
+            }else if(criptoKits.get(j).size() == 4){
+                if (criptoKits.get(j).get(0).getTipo() == 2){ //NARANJA
+                    tipoCriptoKit = tipoCriptoKit + "CK2d, ";
+                }else if(criptoKits.get(j).get(1).getTipo() == 2){ //NARANJA
+                    tipoCriptoKit = tipoCriptoKit + "CK2d, ";
+                }else if(criptoKits.get(j).get(2).getTipo() == 2){ //NARANJA
+                    tipoCriptoKit = tipoCriptoKit + "CK2d, ";
+                }else if(criptoKits.get(j).get(3).getTipo() == 2){ //NARANJA
+                    tipoCriptoKit = tipoCriptoKit + "CK2d, ";
+                }else{
+                    tipoCriptoKit = tipoCriptoKit + "CK2c, ";
+                }
+            }
+        }
+        return tipoCriptoKit;
     }
 
     public int getPuntos (ArrayList<Carta> criptoKit){

@@ -14,6 +14,8 @@ public class Jugador extends Concepto {
     private Carta cartaSeleccionada;
     private ArrayList<Carta> mano;
     private Seleccion seleccion = new Seleccion();
+    private int estrategia;
+
 
     /*** Getters & Setters ***/
     public AgentIdentifier getIdAgente() {
@@ -46,6 +48,13 @@ public class Jugador extends Concepto {
     }
     public void setCartaSeleccionada (Carta cartaSeleccionada){
         this.cartaSeleccionada = cartaSeleccionada;
+    }
+
+    public int getEstrategia() {
+        return estrategia;
+    }
+    public void setEstrategia(int estrategia) {
+        this.estrategia = estrategia;
     }
 
 }

@@ -31,6 +31,7 @@ Univ. Carlos III de Madrid (Spain)<br>
 
 	<capabilities>
 		<capability name="dfcap" file="jadex.planlib.DF"/>
+        <capability name="amscap" file="jadex.planlib.AMS" />
 	</capabilities>
     
     <!-- CREENCIAS -->
@@ -96,11 +97,17 @@ Univ. Carlos III de Madrid (Spain)<br>
         </belief>
     </beliefs>
 
-	<goals>
+	<goals> 
         <!-- Registro en páginas amarillas -->
 		<achievegoalref name="df_register">
 			<concrete ref="dfcap.df_register"/>
 		</achievegoalref>
+
+        <!-- Terminar ejecucion -->
+        <achievegoalref name="ams_shutdown_platform">
+            <concrete ref="amscap.ams_shutdown_platform" />
+        </achievegoalref>
+
 
         <!-- Objetivo para empezar la partida -->
 		<performgoal name="empezarMeta1" retry="false">
@@ -116,7 +123,7 @@ Univ. Carlos III de Madrid (Spain)<br>
 			<creationcondition>
 				<!-- Que se active cuando haya 8 jugadores -->
                 $beliefbase.jugando &amp;&amp;
-				$beliefbase.empezar &amp;&amp; $beliefbase.numJugadores == 3
+				$beliefbase.empezar &amp;&amp; $beliefbase.numJugadores == 8
 			</creationcondition>
 		</performgoal>
 

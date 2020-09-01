@@ -19,7 +19,15 @@ public class Empezar extends Plan
 	private Mazo mazo;
 	
 	public void body()
-	{
+	{	
+
+		// Para mejor sincronizacion
+		try {   
+			Thread.sleep(50);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
 		System.out.println("[PLAN] Se inicializa la mesa");		
 		// Tablero
 		mesa = (Mesa) getBeliefbase().getBelief("mesa").getFact();
