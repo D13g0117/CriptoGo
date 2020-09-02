@@ -1,5 +1,9 @@
 @echo off
-set PATH=C:\Program Files\Java\jdk1.8.0_261\bin;%PATH%
+set extra=
+FOR /L %%i IN (200,1,290) DO (
+	set extra=!extra!;C:\Java\jdk1.8.0_%%i\bin;C:\Program Files\Java\jdk1.8.0_%%i\bin
+)
+
 set classpath=ScwJadex.jar;^
 src\lib\Base64.jar;^
 src\lib\GraphLayout.jar;^

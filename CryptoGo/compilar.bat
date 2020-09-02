@@ -1,5 +1,8 @@
-set PATH=C:\Program Files\Java\jdk1.8.0_261\bin;%PATH%
-set classpath=src\lib\Base64.jar;^
+@echo off
+
+FOR /L %%i IN (200,1,290) DO (
+	set extra=!extra!;C:\Java\jdk1.8.0_%%i\bin;C:\Program Files\Java\jdk1.8.0_%%i\bin
+)set classpath=src\lib\Base64.jar;^
 src\lib\GraphLayout.jar;^
 src\lib\bcel.jar;^
 \src\lib\http.jar;^
