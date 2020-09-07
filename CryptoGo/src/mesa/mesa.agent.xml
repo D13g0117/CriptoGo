@@ -81,11 +81,6 @@ Univ. Carlos III de Madrid (Spain)<br>
             <fact>0</fact>
         </belief>
 
-        <!-- Cartas a revelar -->
-        <belief name="cartasRevelar" class="int">
-            <fact>0</fact>
-        </belief>
-
         <!-- Instante en el que se comienza -->
         <belief name="tiempoInicio" class="int">
             <fact> (int)(System.currentTimeMillis()/1000) </fact>
@@ -136,10 +131,10 @@ Univ. Carlos III de Madrid (Spain)<br>
 			</creationcondition>
 		</performgoal>
 
-        <!-- Pasar al siguiente jugador -->
+        <!-- Terminar ronda -->
 		<performgoal name="finRonda" retry="false">
 			<creationcondition>
-				<!-- Se activa cuando le toque realizar acciones al siguiente jugador -->
+				<!-- Se activa cuando finaliza la ronda -->
                 $beliefbase.jugando &amp;&amp;
 				$beliefbase.finRonda
 			</creationcondition>
@@ -205,7 +200,7 @@ Univ. Carlos III de Madrid (Spain)<br>
 
         <!-- Finalizar ronda -->
         <plan name="finalizar_ronda">
-            <body class="FinalizarRonda" />
+            <body class="FinalizarRondaPlan" />
             <trigger>
                 <goal ref="finRonda" />
             </trigger>
@@ -304,27 +299,11 @@ Univ. Carlos III de Madrid (Spain)<br>
                 <value>SFipa.NUGGETS_XML</value>
             </parameter>
             <parameter name="content-class" class="Class" direction="fixed">
-                <value>DarCartas.class</value>
+                <value>SolicitarCartas.class</value>
             </parameter>
         </messageevent>
 
-        <!-- Cambiar de turno (FinTurnoPlan y CambiarTurnoPlan) -->
-        <messageevent name="Request_Cambiar_Turno" direction="receive" type="fipa">
-            <parameter name="performative" class="String" direction="fixed">
-                <value>SFipa.REQUEST</value>
-            </parameter>
-            <parameter name="language" class="String" direction="fixed">
-                <value>SFipa.NUGGETS_XML</value>
-            </parameter>
-            <parameter name="conversation-id" class="String">
-                <value>SFipa.createUniqueId($scope.getAgentName())</value>
-            </parameter>
-            <parameter name="content-class" class="Class" direction="fixed">
-                <value>CambiarTurno.class</value>
-            </parameter>
-        </messageevent>
-
-        <messageevent name="Inform_Turno_Cambiado" direction="send" type="fipa">
+        <messageevent name="Inform_Cartas_Recibidas" direction="receive" type="fipa">
             <parameter name="performative" class="String" direction="fixed">
                 <value>SFipa.INFORM</value>
             </parameter>
@@ -332,9 +311,11 @@ Univ. Carlos III de Madrid (Spain)<br>
                 <value>SFipa.NUGGETS_XML</value>
             </parameter>
             <parameter name="content-class" class="Class" direction="fixed">
-                <value>TurnoCambiado.class</value>
+                <value>CartasRecibidas.class</value>
             </parameter>
         </messageevent>
+
+        <!-- Cambiar de turno -->
 
         <messageevent name="Inform_Turno_Asignado" direction="send" type="fipa">
             <parameter name="performative" class="String" direction="fixed">
@@ -348,17 +329,17 @@ Univ. Carlos III de Madrid (Spain)<br>
             </parameter>
         </messageevent>
 
-        <messageevent name="Refuse_Cambiar_Turno" direction="send" type="fipa">
-            <parameter name="performative" class="String" direction="fixed">
-                <value>SFipa.REFUSE</value>
-            </parameter>
-            <parameter name="language" class="String" direction="fixed">
-                <value>SFipa.NUGGETS_XML</value>
-            </parameter>
-            <parameter name="content-class" class="Class" direction="fixed">
-                <value>CambiarTurno.class</value>
-            </parameter>
-        </messageevent>
+        <messageevent name="Inform_Realizando_Accion" direction="receive" type="fipa">
+			<parameter name="performative" class="String" direction="fixed">
+				<value>SFipa.INFORM</value>
+			</parameter>
+			<parameter name="language" class="String" direction="fixed">
+				<value>SFipa.NUGGETS_XML</value>
+			</parameter>
+			<parameter name="content-class" class="Class" direction="fixed">
+				<value>RealizandoAccion.class</value>
+			</parameter>
+		</messageevent>
 
         <!-- Seleccionar carta -->
 		<messageevent name="Request_Seleccionar_Carta" direction="receive" type="fipa">
@@ -381,7 +362,7 @@ Univ. Carlos III de Madrid (Spain)<br>
                 <value>SFipa.NUGGETS_XML</value>
             </parameter>
             <parameter name="content-class" class="Class" direction="fixed">
-                <value>SeleccionarCarta.class</value>
+                <value>CartaSeleccionada.class</value>
             </parameter>
         </messageevent>
 
@@ -406,7 +387,32 @@ Univ. Carlos III de Madrid (Spain)<br>
                 <value>SFipa.NUGGETS_XML</value>
             </parameter>
             <parameter name="content-class" class="Class" direction="fixed">
+                <value>CartaSustituida.class</value>
+            </parameter>
+        </messageevent>
+
+        <messageevent name="Refuse_Carta_Sustituida" direction="send" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.REFUSE</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
                 <value>SustituirCarta.class</value>
+            </parameter>
+        </messageevent>
+
+        <!-- Finalizar ronda -->
+		<messageevent name="Inform_Finalizar_Ronda" direction="send" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.INFORM</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>FinalizarRonda.class</value>
             </parameter>
         </messageevent>
   </events>

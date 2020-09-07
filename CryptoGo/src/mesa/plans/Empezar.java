@@ -29,7 +29,7 @@ public class Empezar extends Plan
 		}
 
 		System.out.println("[PLAN] Se inicializa la mesa");		
-		// Tablero
+		// Mesa
 		mesa = (Mesa) getBeliefbase().getBelief("mesa").getFact();
 		mazo = (Mazo) getBeliefbase().getBelief("mazo").getFact();
 		mazo = InicializarMazo();

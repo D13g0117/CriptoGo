@@ -11,6 +11,7 @@ import jadex.runtime.IGoal;
 import ontology.actions.*;
 import ontology.actions.SeleccionarCarta;
 import ontology.concepts.*;
+import ontology.predicates.CartaSeleccionada;
 
 public class RevelarCartasPlan extends Plan
 {
@@ -23,7 +24,6 @@ public class RevelarCartasPlan extends Plan
         SeleccionarCarta seleccion = (SeleccionarCarta) peticion.getContent();
         Carta cartaSeleccionada = seleccion.getCartaSeleccionada();
         
-        int cartasRevelar = (int) getBeliefbase().getBelief("cartasRevelar").getFact();
 
         //Hay que actualizar la mano
         
@@ -52,8 +52,8 @@ public class RevelarCartasPlan extends Plan
         //}
 
         IMessageEvent msgsend = createMessageEvent("Inform_Carta_Seleccionada");       
-        SeleccionarCarta accion = new SeleccionarCarta();   
-        msgsend.setContent(accion);
+        CartaSeleccionada predicado = new CartaSeleccionada();   
+        msgsend.setContent(predicado);
         msgsend.getParameterSet(SFipa.RECEIVERS).addValue(idJugador);
         System.out.println("[INFO] Carta seleccionada por el jugador con id " + idJugador + ": " + cartaSeleccionada.Mostrar());
 

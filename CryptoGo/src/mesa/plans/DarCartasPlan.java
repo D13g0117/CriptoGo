@@ -88,7 +88,7 @@ public class DarCartasPlan extends Plan
         }else{
             System.out.println("[RECHAZADO] No es el tunro de recibir cartas");
             // Se rechaza la petición de acción del jugador
-            DarCartas accion = new DarCartas();
+            SolicitarCartas accion = new SolicitarCartas();
             IMessageEvent respuesta = peticion.createReply("Refuse_Dar_Cartas", accion);
             sendMessage(respuesta);
         }

@@ -319,7 +319,7 @@ public class SeleccionarCartaPlan extends Plan
 
     }
 
-    //Se selecciona la carta que beneficia al rival para que este no pueda formar criptokits
+    //Se selecciona la carta que perjudica al rival para que este no pueda formar criptokits
     public Carta verCartasRival(ArrayList<Carta> manoParam){
         ArrayList<Carta> cartasRival = new ArrayList<>();
         ArrayList<Carta> manoAux = new ArrayList<>();
@@ -522,6 +522,4 @@ public class SeleccionarCartaPlan extends Plan
         }
         System.out.println();
     }
-
-
 }

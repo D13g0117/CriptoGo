@@ -8,6 +8,7 @@ import jadex.runtime.Plan;
 import jadex.runtime.IGoal;
 
 import ontology.actions.*;
+import ontology.predicates.*;
 import ontology.concepts.*;
 
 
@@ -37,5 +38,10 @@ public class RecibirCartas extends Plan
         }
         getBeliefbase().getBelief("pocasCartas").setFact(false);
         System.out.println("[PLAN] Jugador con id " + getAgentIdentifier() + " ha recibido las cartas");
+        IMessageEvent informe = createMessageEvent("Inform_Cartas_Recibidas");
+        CartasRecibidas predicado = new CartasRecibidas();
+        informe.setContent(predicado);
+        informe.getParameterSet(SFipa.RECEIVERS).addValue(getBeliefbase().getBelief("mesa").getFact());
+        sendMessage(informe);
     }
 }

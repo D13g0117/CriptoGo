@@ -128,7 +128,7 @@ Univ. Carlos III de Madrid (Spain)<br>
 		</plan>
 		
 		<plan name="Realizar_Accion">
-            <body class="RealizarAccion" />
+            <body class="RealizarAccionPlan" />
 			<trigger>
 				<messageevent ref="Inform_Turno_Asignado" />
 			</trigger>
@@ -232,6 +232,18 @@ Univ. Carlos III de Madrid (Spain)<br>
 			</parameter>
 		</messageevent>
 
+		<messageevent name="Inform_Realizando_Accion" direction="send" type="fipa">
+			<parameter name="performative" class="String" direction="fixed">
+				<value>SFipa.INFORM</value>
+			</parameter>
+			<parameter name="language" class="String" direction="fixed">
+				<value>SFipa.NUGGETS_XML</value>
+			</parameter>
+			<parameter name="content-class" class="Class" direction="fixed">
+				<value>RealizandoAccion.class</value>
+			</parameter>
+		</messageevent>
+
 		<!-- Solicitar cartas -->
 		<messageevent name="Request_Solicitar_Cartas" direction="send" type="fipa">
 			<parameter name="performative" class="String" direction="fixed">
@@ -260,6 +272,30 @@ Univ. Carlos III de Madrid (Spain)<br>
             </parameter>
         </messageevent>
 
+		<messageevent name="Refuse_Dar_Cartas" direction="receive" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.REFUSE</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>SolicitarCartas.class</value>
+            </parameter>
+        </messageevent>
+
+		<messageevent name="Inform_Cartas_Recibidas" direction="send" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.INFORM</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>CartasRecibidas.class</value>
+            </parameter>
+        </messageevent>
+
 		<!-- Seleccionar carta -->
 		<messageevent name="Request_Seleccionar_Carta" direction="send" type="fipa">
             <parameter name="performative" class="String" direction="fixed">
@@ -281,7 +317,7 @@ Univ. Carlos III de Madrid (Spain)<br>
                 <value>SFipa.NUGGETS_XML</value>
             </parameter>
             <parameter name="content-class" class="Class" direction="fixed">
-                <value>SeleccionarCarta.class</value>
+                <value>CartaSeleccionada.class</value>
             </parameter>
         </messageevent>
 
@@ -306,9 +342,35 @@ Univ. Carlos III de Madrid (Spain)<br>
                 <value>SFipa.NUGGETS_XML</value>
             </parameter>
             <parameter name="content-class" class="Class" direction="fixed">
+                <value>CartaSustituida.class</value>
+            </parameter>
+        </messageevent>
+
+		<messageevent name="Refuse_Carta_Sustituida" direction="receive" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.REFUSE</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
                 <value>SustituirCarta.class</value>
             </parameter>
         </messageevent>
+
+        <!-- Finalizar ronda -->
+		<messageevent name="Inform_Finalizar_Ronda" direction="receive" type="fipa">
+            <parameter name="performative" class="String" direction="fixed">
+                <value>SFipa.INFORM</value>
+            </parameter>
+            <parameter name="language" class="String" direction="fixed">
+                <value>SFipa.NUGGETS_XML</value>
+            </parameter>
+            <parameter name="content-class" class="Class" direction="fixed">
+                <value>FinalizarRonda.class</value>
+            </parameter>
+        </messageevent>
+
 
 	</events>
 

@@ -44,48 +44,46 @@ public class SustituirCartaPlan extends Plan
             System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " solicita cartas");
             sendMessage(msgsend);
         }else{
+            
+            sustitucion = DecidirSustitucion();
 
-        
-        sustitucion = DecidirSustitucion();
-
-
-        // Si no hay carta a sustituir, no se hace nada
-        if (!sustitucion.getCartaASustituir().Mostrar().equals("[ null, Baja, SC ]")){
-            //Sustitucion
-            for (int i = 0; i < mano.size(); i++) {
-                if (mano.get(i).equals(sustitucion.getCartaSustituta())){
-                    for (int j = 0; j < selecion.size(); j++){
-                        if (selecion.get(j).equals(sustitucion.getCartaASustituir())){
-                            mano.remove(i);
-                            jugador.getSeleccion().getCartasSeleccionadas().remove(j);
-                            jugador.getSeleccion().getCartasSeleccionadas().add(sustitucion.getCartaSustituta());
-                            getBeliefbase().getBelief("jugador").setFact(jugador);
-                            break;
+            // Si no hay carta a sustituir, no se hace nada
+            if (!sustitucion.getCartaASustituir().Mostrar().equals("[ null, Baja, SC ]")){
+                //Sustitucion
+                for (int i = 0; i < mano.size(); i++) {
+                    if (mano.get(i).equals(sustitucion.getCartaSustituta())){
+                        for (int j = 0; j < selecion.size(); j++){
+                            if (selecion.get(j).equals(sustitucion.getCartaASustituir())){
+                                mano.remove(i);
+                                jugador.getSeleccion().getCartasSeleccionadas().remove(j);
+                                jugador.getSeleccion().getCartasSeleccionadas().add(sustitucion.getCartaSustituta());
+                                getBeliefbase().getBelief("jugador").setFact(jugador);
+                                break;
+                            }
                         }
-                    }
-                    break;
-                }  
-            }
-            sustitucion.setJugador(jugador);
-            AgentIdentifier mesa = (AgentIdentifier) getBeliefbase().getBelief("mesa").getFact();
-            System.out.println("[PLAN] Jugador con id: " + jugador.getIdAgente() + " quiere sustituir la carta " + sustitucion.getCartaASustituir().Mostrar() + " por la carta " + sustitucion.getCartaSustituta().Mostrar());
-            IMessageEvent respuesta = createMessageEvent("Request_Solicitar_Cartas");
-            respuesta.setContent(sustitucion);
-            respuesta.getParameterSet(SFipa.RECEIVERS).addValue(mesa);
-            sendMessage(respuesta);
+                        break;
+                    }  
+                }
+                sustitucion.setJugador(jugador);
+                AgentIdentifier mesa = (AgentIdentifier) getBeliefbase().getBelief("mesa").getFact();
+                System.out.println("[PLAN] Jugador con id: " + jugador.getIdAgente() + " quiere sustituir la carta " + sustitucion.getCartaASustituir().Mostrar() + " por la carta " + sustitucion.getCartaSustituta().Mostrar());
+                IMessageEvent respuesta = createMessageEvent("Request_Solicitar_Cartas");
+                respuesta.setContent(sustitucion);
+                respuesta.getParameterSet(SFipa.RECEIVERS).addValue(mesa);
+                sendMessage(respuesta);
 
-         }else{
-            getBeliefbase().getBelief("sustituir").setFact(false);
-            AgentIdentifier mesa = (AgentIdentifier) getBeliefbase().getBelief("mesa").getFact();
-            IMessageEvent msgsend = createMessageEvent("Request_Solicitar_Cartas");
-            SolicitarCartas solicitud = new SolicitarCartas();
-            solicitud.setSenderID(jugador.getIdAgente());
-            solicitud.setNumCartasARobar(1);
-            msgsend.setContent(solicitud);
-            msgsend.getParameterSet(SFipa.RECEIVERS).addValue(mesa);
-            System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " solicita cartas");
-            sendMessage(msgsend);
-         }
+            }else{
+                getBeliefbase().getBelief("sustituir").setFact(false);
+                AgentIdentifier mesa = (AgentIdentifier) getBeliefbase().getBelief("mesa").getFact();
+                IMessageEvent msgsend = createMessageEvent("Request_Solicitar_Cartas");
+                SolicitarCartas solicitud = new SolicitarCartas();
+                solicitud.setSenderID(jugador.getIdAgente());
+                solicitud.setNumCartasARobar(1);
+                msgsend.setContent(solicitud);
+                msgsend.getParameterSet(SFipa.RECEIVERS).addValue(mesa);
+                System.out.println("[PLAN] El jugador con id " + jugador.getIdAgente() + " solicita cartas");
+                sendMessage(msgsend);
+            }
         }
     }
 
